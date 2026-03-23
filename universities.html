@@ -335,111 +335,208 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   </head>
 
-  <body>
-     <nav class="nav-links">
+  <body class="page-discovery">
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <header class="navbar glass-effect">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="CURSUS Logo" class="logo-icon">
+                <span class="logo-text">cursus</span>
+            </a>
+            <nav class="nav-links">
                 <a href="index.html">Accueil</a>
                 <a href="universities.html">Universités</a>
                 <a href="schools.html" class="active">Lycées & Collèges</a>
                 <a href="#" id="partnerNavLink">Espace Partenaire</a>
             </nav>
-    <nav>
-      <div class="logo">
-        <img
-          src="./WhatsApp Image 2026-03-16 at 22.43.13.jpeg"
-          alt="Cursus"
-          width="100px"
-          id="logg"
-          style="border-radius: 35%"
-        />
-      </div>
-      <div
-        class="nav-links"
-        style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          width: 100%;
-        "
-      >
-        <h1>Universités</h1>
-        <button
-          class="theme-toggle"
-          onclick="
-            document.body.classList.toggle('light-theme');
-            let jour = document.getElementById('logg');
-            let nuit = './WhatsApp Image 2026-03-16 at 22.43.13.jpeg';
-            if (document.body.classList.contains('light-theme')) {
-              jour.src = './WhatsApp Image 2026-03-16 at 10.48.32.jpeg';
-            } else {
-              jour.src = nuit;
-            }
-          "
-        >
-          Thème Jour/Nuit
-        </button>
-      </div>
-    </nav>
-    <div class="main-container">
-      <aside class="sidebar">
-        <div class="filter-group">
-          <label>Rechercher</label>
-          <input type="text" placeholder="Nom, filière..." />
+            <div class="nav-actions">
+                <button id="themeToggle" class="btn btn-icon glass-effect">
+                    <i class='bx bx-moon'></i>
+                </button>
+                <button id="loginBtn" class="btn btn-outline">Se connecter</button>
+                <button id="signupBtn" class="btn btn-primary">S'inscrire</button>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class='bx bx-menu'></i>
+            </div>
         </div>
+    </header>
 
-        <div class="filter-group">
-          <label
-            >Scolarité max (FCFA) pour une année :
-            <span id="valu">0</span></label
-          >
-          <input
-            id="val"
-            type="range"
-            class="range-slider"
-            min="0"
-            max="4000000"
-            step="20000"
-            value="0"
-          />
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              font-size: 0.8rem;
-              margin-top: 5px;
-            "
-          >
-            <span>0</span><span>4M</span>
-          </div>
+    <div class="mobile-menu glass-effect" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <button class="menu-close">&times;</button>
+            <nav class="mobile-nav">
+                <a href="index.html">Accueil</a>
+                <a href="universities.html">Universités</a>
+                <a href="schools.html" class="active">Lycées & Collèges</a>
+                <a href="#" id="partnerMobileLink">Espace Partenaire</a>
+            </nav>
+            <div class="mobile-actions">
+                <!-- Les boutons seront injectés dynamiquement par app.js -->
+            </div>
         </div>
+    </div>
 
-        <div class="filter-group">
-          <label>Ville</label>
-          <select>
-            <option>Toutes les villes</option>
-            <option>Ouagadougou</option>
-            <option>Bobo-Dioulasso</option>
-            <option>Koudougou</option>
-            <option>Dédougou</option>
-            <option>Autre</option>
-          </select>
-        </div>
+    <main>
+        <section class="discovery-header section">
+            <div class="container">
+                <h1>Universités</h1>
+                <p>Trouvez le meilleur cadre pour votre éducation universitaire au Burkina Faso.</p>
+                
+                <div class="search-bar glass-effect" style="margin-top: 2rem;">
+                    <i class='bx bx-search'></i>
+                    <input type="text" id="mainSearch" placeholder="Rechercher un établissement, une série...">
+                    <button class="btn btn-primary">Rechercher</button>
+                </div>
+            </div>
+        </section>
 
-        <div class="filter-group">
-          <label>Diplômes </label>
-          <div class="checkbox-group">
-            <label><input type="checkbox" /> Licence </label>
-            <label><input type="checkbox" /> Master </label>
-            <label><input type="checkbox" /> Doctorat </label>
-            <label><input type="checkbox" /> Ingénierie</label>
-          </div>
-        </div>
-      </aside>
+        <section id="discover" class="section bg-light">
+            <div class="container discover-layout">
+                <aside class="sidebar glass-effect">
+                    <div class="filter-group">
+                        <label>Scolarité max (FCFA)</label>
+                        <input type="range" id="priceFilter" min="0" max="1000000" step="10000" value="1000000">
+                        <div class="range-values">
+                            <span>0</span>
+                            <span id="priceValue">4M</span>
+                        </div>
+                    </div>
 
-      <main class="content-area">
-        <div class="search-header">
-          <h1>Toutes les Institutions</h1>
-          <p>Explorez les meilleurs établissements du Burkina Faso</p>
+                    <div class="filter-group">
+                        <label>Ville</label>
+                        <select id="regionFilter" class="glass-effect">
+                            <option value="all">Toutes les villes</option>
+                            <option value="Ouagadougou">Ouagadougou</option>
+                            <option value="Bobo-Dioulasso">Bobo-Dioulasso</option>
+                            <option value="Koudougou">Koudougou</option>
+                            <option value="Dédougou">Dédougou</option>
+                            <option value="Dori">Dori</option>
+                            <option value="Kombissiri">Kombissiri</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group filter-school">
+                        <label>DIPLOMES</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="diploma" value="Série A"> Licence</label>
+                            <label><input type="checkbox" name="diploma" value="Série C"> Master</label>
+                            <label><input type="checkbox" name="diploma" value="Série D"> Doctorat</label>
+                            <label><input type="checkbox" name="diploma" value="Filières Pro"> Ingénierie</label>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="results-container">
+                    <div class="results-header">
+                        <h3 id="resultsCount">Recherche en cours...</h3>
+                    </div>
+                    <div id="institutesGrid" class="institutes-grid"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="logo.png" alt="CURSUS Logo" class="logo-icon">
+                    <span class="logo-text">cursus</span>
+                </a>
+                <p>La première plateforme intelligente d'orientation scolaire et universitaire au Burkina Faso.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Plateforme</h4>
+                <a href="universities.html">Universités</a>
+                <a href="schools.html">Lycées & Collèges</a>
+            </div>
+            <div class="footer-links">
+                <h4>Entreprise</h4>
+                <a href="#" id="partnerFooterLink">Partenaires</a>
+                <a href="#">À propos</a>
+            </div>
         </div>
+    </footer>
+
+    <div id="detailsModal" class="modal-overlay">
+        <div class="modal-content glass-effect modal-large">
+            <button class="modal-close">&times;</button>
+            <div id="modalDetailsContent"></div>
+        </div>
+    </div>
+
+    <!-- Modale d'Add Institute (Partenaire) -->
+    <div id="partnerModal" class="modal-overlay">
+        <div class="modal-content glass-effect modal-large">
+            <button class="modal-close">&times;</button>
+            <div class="auth-form-container">
+                <h2>Ajouter votre établissement</h2>
+                <form id="addInstituteForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="text" id="instName" placeholder="Nom" required>
+                        <select id="instCategory" class="glass-effect">
+                            <option value="school">Université</option>
+                            <option value="university">Lycée / Collège</option>
+                        </select>
+                    </div>
+                    <input type="text" id="instPrograms" placeholder="Programmes" required>
+                    <button type="submit" class="btn btn-primary w-full">Soumettre</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modales d'authentification -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-content glass-effect">
+            <button class="modal-close">&times;</button>
+            
+            <!-- Formulaire de Connexion -->
+            <div id="loginForm" class="auth-form-container">
+                <h2>Bon retour !</h2>
+                <p>Connectez-vous pour accéder à vos favoris.</p>
+                <form>
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="votre@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPass">Mot de passe</label>
+                        <input type="password" id="loginPass" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Se connecter</button>
+                </form>
+                <p class="auth-switch">Pas encore de compte ? <a href="#" id="switchToSignup">S'inscrire</a></p>
+            </div>
+
+            <!-- Formulaire d'Inscription -->
+            <div id="signupForm" class="auth-form-container" style="display: none;">
+                <h2>Créer un compte</h2>
+                <p>Rejoignez la communauté CURSUS dès aujourd'hui.</p>
+                <form>
+                    <div class="form-group">
+                        <label for="signupName">Nom complet</label>
+                        <input type="text" id="signupName" placeholder="Jean Dupont" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" placeholder="votre@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPass">Mot de passe</label>
+                        <input type="password" id="signupPass" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Créer mon compte</button>
+                </form>
+                <p class="auth-switch">Déjà inscrit ? <a href="#" id="switchToLogin">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
 
         <div class="card-grid">
           <div class="card">
