@@ -1,0 +1,7 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="33" height="100" fill="#002395" />
+  <rect x="33" width="34" height="100" fill="#ffffff" />
+  <rect x="67" width="33" height="100" fill="#ed2939" />
+  <path d="M50 20 L65 80 L35 80 Z" fill="#333" opacity="0.3" />
+  <text x="50" y="95" font-family="Arial" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">LFSE</text>
+</svg>

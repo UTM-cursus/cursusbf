@@ -1,0 +1,5 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="15" fill="#0f172a" />
+  <path d="M20 20 L40 20 L40 40 L20 40 Z M60 20 L80 20 L80 40 L60 40 Z M20 60 L40 60 L40 80 L20 80 Z M60 60 L80 60 L80 80 L60 80 Z" fill="#3b82f6" opacity="0.6" />
+  <text x="50" y="55" font-family="Arial" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">UTM</text>
+</svg>
