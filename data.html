@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instituts & Universités — Burkina Faso</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161920;
+    --surface2: #1e2230;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8eaf0;
+    --muted: #8a8fa8;
+    --accent: #e8a020;
+    --accent2: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --gold: #f4c430;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #0d0f14 0%, #1a1f2e 50%, #0d0f14 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,160,32,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 100px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .header-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(232,160,32,0.1);
+    border: 1px solid rgba(232,160,32,0.25);
+    padding: 5px 14px;
+    border-radius: 30px;
+    margin-bottom: 18px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #ffffff 30%, #c8cad8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  header p {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 500px;
+    line-height: 1.6;
+  }
+  .stats-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── FILTERS ── */
+  .filters-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .filters-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px 10px 42px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .sort-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* ── MAIN GRID ── */
+  .main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 36px 40px 60px;
+  }
+  .results-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .results-label span { color: var(--text); font-weight: 600; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp .4s ease both;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(232,160,32,0.3);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    padding: 20px 22px 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-logo {
+    width: 46px; height: 46px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .card-title-wrap { flex: 1; min-width: 0; }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-type {
+    background: rgba(59,130,246,0.12);
+    color: #7ab3f8;
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+  .badge-city {
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .card-kpis {
+    padding: 14px 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .kpi {
+    background: var(--surface);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .kpi-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .kpi-val.accent { color: var(--accent); }
+  .kpi-val.green  { color: var(--green); }
+  .kpi-val.blue   { color: var(--accent2); }
+  .kpi-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* Stars */
+  .stars {
+    display: flex;
+    gap: 1px;
+    font-size: 12px;
+  }
+  .star { color: #888; }
+  .star.filled { color: var(--gold); }
+
+  /* Programs accordion */
+  .programs-toggle {
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .programs-toggle:hover { background: var(--surface2); }
+  .programs-toggle span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .programs-toggle .count {
+    font-size: 12px;
+    background: rgba(232,160,32,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(232,160,32,0.2);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .toggle-icon {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    margin-left: 8px;
+  }
+  .toggle-icon.open { transform: rotate(180deg); }
+
+  .programs-list {
+    display: none;
+    flex-direction: column;
+    padding: 0 22px 4px;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  .programs-list.open { display: flex; }
+  .programs-list::-webkit-scrollbar { width: 4px; }
+  .programs-list::-webkit-scrollbar-track { background: transparent; }
+  .programs-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .prog-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 12px;
+  }
+  .prog-item:last-child { border-bottom: none; }
+  .prog-name {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    flex: 1;
+  }
+  .prog-price {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .prog-price.free { color: var(--green); }
+
+  .card-footer {
+    padding: 14px 22px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .price-display {
+    display: flex;
+    flex-direction: column;
+  }
+  .price-from { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
+  .price-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  .price-free { color: var(--green); }
+  .price-unit { font-size: 10px; color: var(--muted); }
+  .match-pill {
+    background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05));
+    border: 1px solid rgba(34,197,94,0.25);
+    color: var(--green);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* Empty state */
+  .empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 14px; }
+  .empty h3 { font-size: 18px; color: var(--text); margin-bottom: 6px; }
+
+  @media (max-width: 700px) {
+    header, .filters-bar, .main { padding-left: 20px; padding-right: 20px; }
+    .grid { grid-template-columns: 1fr; }
+    .stats-row { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-tag">Burkina Faso · 2024–2025</div>
+    <h1>Instituts &amp; Universités</h1>
+    <p>Répertoire complet des établissements d'enseignement supérieur publics et privés.</p>
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-num" id="total-count">—</span>
+        <span class="stat-label">Établissements</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="prog-count">—</span>
+        <span class="stat-label">Filières</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">2</span>
+        <span class="stat-label">Villes</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="filters-bar">
+  <div class="filters-inner">
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="search" placeholder="Rechercher un établissement ou filière…">
+    </div>
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <button class="filter-btn" data-filter="university">Universités</button>
+    <button class="filter-btn" data-filter="school">Lycées</button>
+    <select class="sort-select" id="sort">
+      <option value="match">Tri : Match %</option>
+      <option value="rating">Tri : Note</option>
+      <option value="price-asc">Tri : Prix ↑</option>
+      <option value="price-desc">Tri : Prix ↓</option>
+      <option value="alpha">Tri : A → Z</option>
+    </select>
+  </div>
+</div>
+
+<main class="main">
+  <p class="results-label"><span id="shown-count">—</span> établissements affichés</p>
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+const institutes = [
+  {id:1,name:"Université Joseph Ki-Zerbo (UJKZ)",category:"university",type:"Université Publique (Siège)",city:"Ouagadougou",price:15000,rating:4.6,match:95,programs:[{name:"LAC - Allemand (Licence L1/L2/L3)",price:15000},{name:"LAC - Anglais (Licence L1/L2/L3)",price:15000},{name:"LAC - Lettres Modernes (Licence L1/L2/L3)",price:15000},{name:"LAC - Linguistique (Licence L1/L2/L3)",price:15000},{name:"LAC - Communication (Licence L1/L2/L3)",price:15000},{name:"LAC - Master AMCA (Arts de la scène) (M1/M2)",price:715000},{name:"LAC - Master LCA (Littératures Africaines) (M1/M2)",price:715000},{name:"SH - Géographie (Licence L1/L2/L3)",price:15000},{name:"SH - Histoire et Archéologie (Licence L1/L2/L3)",price:15000},{name:"SH - Philosophie (Licence L1/L2/L3)",price:15000},{name:"SH - Psychologie (Licence L1/L2/L3)",price:15000},{name:"SH - Sociologie (Licence L1/L2/L3)",price:15000},{name:"SEG - Sciences Economiques (Licence L1/L2/L3)",price:15000},{name:"SEG - Sciences de Gestion (Licence L1/L2/L3)",price:15000},{name:"SEG - Transport et Logistique (Licence L1)",price:15000},{name:"SDS - Médecine (Doctorat L1 à TCEM)",price:15000},{name:"SDS - Pharmacie (Doctorat L1/L3)",price:15000},{name:"SEA - Mathématiques (Licence L1-L3)",price:15000},{name:"SEA - Informatique (Licence L1-L3)",price:15000},{name:"IBAM - CCA (Licence L1-L3)",price:15000},{name:"IBAM - Banque Finance (Licence L1-L3)",price:15000},{name:"IBAM - Marketing Digital (Licence L1-L3)",price:15000}]},
+  {id:4,name:"Université Nazi Boni (UNB)",category:"university",type:"Université Publique",city:"Bobo-Dioulasso",price:15000,rating:4.5,match:92,programs:[{name:"ESI - Informatique (Analyse/Réseaux) (DUT L1/L2)",price:15000},{name:"ESI - Systèmes d'Information (Licence L3)",price:15000},{name:"ESI - Réseaux et Systèmes (Licence L3)",price:15000},{name:"ESI - Master Systèmes d'Information (M1/M2)",price:715000},{name:"IUT - Finance Comptabilité / Gestion (DUT L1-L3)",price:15000},{name:"IUT - Marketing / Communication (DUT L1-L3)",price:15000},{name:"IUT - Assurance Banque Finances (DUT L1-L3)",price:15000},{name:"IUT - Génie Civil (DUT L1-L3)",price:15000},{name:"IUT - Génie Electrique / Mécanique (L1-L3)",price:15000},{name:"IUT - Secrétariat de Direction (DUT L1-L3)",price:15000},{name:"IDR - Agronomie / Elevage (Licence / Ingéniorat)",price:15000},{name:"IDR - Eaux et Forêts (Licence / Ingéniorat)",price:15000},{name:"IDR - Master Développement Rural (M1/M2)",price:715000},{name:"INSSA - Médecine / Pharmacie (Doctorat)",price:15000},{name:"ST - Sciences Biologiques / SB (Licence L1-L3)",price:15000},{name:"ST - Math Phys Info / MPI (Licence L1-L3)",price:15000},{name:"ST - Chimie / Microbiologie (Licence L1-L3)",price:15000},{name:"SEG - Sciences Economiques / Gestion (L1-L3)",price:15000},{name:"SEG - Droit (Licence L1-L3)",price:15000},{name:"SH-LAM - Histoire / Anthropologie (L1-L3)",price:15000},{name:"SH-LAM - Lettres Modernes (Licence L1-L3)",price:15000}]},
+  {id:41,name:"ISPP - Institut Supérieur Privé Polytechnique",category:"university",type:"Université Privée (CAMES)",city:"Ouagadougou",price:440000,rating:4.9,match:99,programs:[{name:"DTS - Finance Comptabilité (L1/L2)",price:440000},{name:"DTS - Banque (L1/L2)",price:440000},{name:"DTS - Communication d'Entreprise (L1/L2)",price:440000},{name:"DTS - Gestion Commerciale / Marketing (L1/L2)",price:440000},{name:"DTS - Secrétariat Bureautique (L1/L2)",price:440000},{name:"Licence Finance Comptabilité (L1/L2)",price:440000},{name:"Licence Finance Comptabilité (L3)",price:640000},{name:"Licence Banque & Microfinance (L1/L2)",price:440000},{name:"Licence Banque & Microfinance (L3)",price:740000},{name:"Licence GRH (L1/L2)",price:440000},{name:"Licence GRH (L3)",price:740000},{name:"Licence Communication & Marketing (L1/L2)",price:440000},{name:"Licence Communication & Marketing (L3)",price:740000},{name:"Licence Transport Logistique (L1/L2)",price:440000},{name:"Licence Transport Logistique (L3)",price:740000},{name:"Licence Assistanat de Direction (L1-L3)",price:440000},{name:"Licence CCA (L3)",price:740000},{name:"Master 1 - CCA / Finance Contrôle",price:865000},{name:"Master 2 - CCA / Finance Contrôle",price:1035000},{name:"Master 1 - Droit des Affaires & Fiscalité",price:865000},{name:"Master 2 - Droit des Affaires & Fiscalité",price:1035000},{name:"Master 1 - Management des Projets",price:865000},{name:"Master 2 - Management des Projets",price:1035000},{name:"Master 1 - GRH",price:865000},{name:"Master 2 - GRH",price:1035000},{name:"Master 1 - Management de la Qualité (QSE)",price:865000},{name:"Master 2 - Management de la Qualité (QSE)",price:1035000}]},
+  {id:42,name:"UPO - Université Privée de Ouagadougou",category:"university",type:"Université Privée d'Excellence",city:"Ouagadougou",price:420000,rating:4.8,match:96,programs:[{name:"Droit Privé (Licence L1)",price:420000},{name:"Droit Privé (Licence L2)",price:460000},{name:"Droit Privé (Licence L3)",price:520000},{name:"Droit Public (Licence L1)",price:420000},{name:"Droit Public (Licence L2)",price:460000},{name:"Droit Public (Licence L3)",price:520000},{name:"Master 1 - Droit Public / Privé",price:700000},{name:"Master 2 - Droit Public / Privé",price:900000}]},
+  {id:10,name:"Université Aube Nouvelle (U-AUBEN)",category:"university",type:"Université Privée (Leader)",city:"Ouagadougou",price:520000,rating:4.8,match:98,programs:[{name:"Droit Privé Judiciaire (Licence L1/L2)",price:570000},{name:"Droit Privé Judiciaire (Licence L3)",price:770000},{name:"Droit Public Fondamental (Licence L1/L2)",price:570000},{name:"Master Droit (M1/M2)",price:1040000},{name:"Banque Assurance (Licence L1/L2)",price:570000},{name:"Marketing / GRH / Projets (Licence L1/L2)",price:570000},{name:"Comptabilité et Finance (Licence L1/L2)",price:570000},{name:"Master CCA / RH / Projets / Logistique",price:1040000},{name:"Génie Informatique / Réseaux (Licence L1/L2)",price:615000},{name:"Génie Informatique / Réseaux (Licence L3)",price:815000},{name:"Génie Electrique / Automatisme (Licence L1/L2)",price:615000},{name:"Energie Renouvelable (Licence L1/L2)",price:615000},{name:"Eau Hygiène et Assainissement (Licence L1/L2)",price:615000},{name:"Architecture (Licence L1-L3)",price:1065000},{name:"Agronomie / Géologie Appliquée (Licence L1/L2)",price:615000},{name:"Bio Analyse / Qualité (Licence L1/L2)",price:615000}]},
+  {id:21,name:"Université de l'Unité Africaine (ex IAM)",category:"university",type:"Université Privée",city:"Ouagadougou",price:550000,rating:4.7,match:94,programs:[{name:"Bachelor Finance Comptabilité (L1/L2)",price:550000},{name:"Bachelor Finance Comptabilité (L3)",price:680000},{name:"Bachelor Banque & Finance (L1/L2)",price:550000},{name:"Bachelor Banque & Finance (L3)",price:680000},{name:"Bachelor Transport et Logistique (L1/L2)",price:550000},{name:"Bachelor Transport et Logistique (L3)",price:680000},{name:"Bachelor BBA - Business Administration (L1-L3)",price:550000},{name:"Bachelor Sc. Eco et Gestion (L1-L3)",price:550000},{name:"Bachelor Com / Marketing / RH (L1-L3)",price:550000},{name:"Génie Civil / Informatique (L1/L2)",price:615000},{name:"Master 1 - Management / Marketing / RH",price:810000},{name:"Master 2 - Management / Marketing / RH",price:910000},{name:"Master 1 - Droit Privé / Public",price:810000},{name:"Master 2 - Droit Privé / Public",price:910000},{name:"Master 1 - Audit & Contrôle de Gestion",price:810000},{name:"Master 2 - Audit & Contrôle de Gestion",price:910000},{name:"Master 1 - Banque & Ingénierie Financière",price:810000},{name:"Master 2 - Banque & Ingénierie Financière",price:910000}]},
+  {id:34,name:"ULB - Université Libre du Burkina",category:"university",type:"Université Privée",city:"Ouagadougou",price:450000,rating:4.9,match:97,programs:[{name:"Gestion & Administration des Entreprises (L1/L2)",price:455000},{name:"Gestion & Administration des Entreprises (L3)",price:550000},{name:"Gestion Financière et Bancaire (L1-L3)",price:455000},{name:"Gestion des Ressources Humaines (L1-L3)",price:455000},{name:"Gestion Commerciale / Projets (L1-L3)",price:455000},{name:"Droit Privé / Public (Licence L1/L2)",price:455000},{name:"Droit Privé / Public (Licence L3)",price:550000},{name:"Droit de l'Urbanisme / Foncier (L1-L3)",price:455000},{name:"Communication (L1-L3)",price:455000},{name:"Diplomatie et Relations Internationales (L1-L3)",price:455000},{name:"Master 1 - Droit / SEG / Diplomatie",price:725000},{name:"Master 2 - Droit / SEG / Diplomatie",price:950000}]},
+  {id:12,name:"ESTA",category:"university",type:"Polytechnique Privé",city:"Ouagadougou",price:550000,rating:4.7,match:94,programs:[{name:"Licence Systèmes d'Information et Réseaux (SIR)",price:550000},{name:"Licence Réseaux Informatiques et Télécoms (RIT)",price:550000},{name:"Licence Génie Biomédical (GBM)",price:550000},{name:"Licence Electromécanique (ELM)",price:550000},{name:"Licence Electronique et Auto. Industriel (EAI)",price:550000},{name:"Licence Génie Electrique",price:550000},{name:"Master Ingénieur Electromécanicien",price:950000},{name:"Master Réseaux Informatiques et Télécoms",price:950000},{name:"Master Electronique et Auto. Industriel",price:950000},{name:"Master Systèmes de Sécurité Informatique (SSI)",price:950000}]},
+  {id:14,name:"HETEC",category:"university",type:"Ecole de Management",city:"Ouagadougou",price:440000,rating:4.6,match:92,programs:[{name:"Marketing & Communication d'Entreprise (L1/L2)",price:440000},{name:"Marketing & Communication d'Entreprise (L3)",price:540000},{name:"Gestion des Ressources Humaines (L1-L3)",price:440000},{name:"Management des Projets et Organisations (L1-L3)",price:440000},{name:"Techniques Comptables et Financières (L1/L2)",price:440000},{name:"Techniques Comptables et Financières (L3)",price:540000},{name:"Audit et Contrôle de Gestion (L1-L3)",price:440000},{name:"Procédures et Fiscalité Appliquée",price:440000},{name:"Transport Logistique (L1/L2)",price:440000},{name:"Transport Logistique (L3)",price:540000},{name:"Génie Logiciel / Réseaux (L1-L3)",price:440000},{name:"Master 1 - Finance / Marketing / RH / Log.",price:850000},{name:"Master 2 - Finance / Marketing / RH / Log.",price:950000},{name:"Master 2 - Management des Projets (MGO)",price:1050000}]},
+  {id:15,name:"UTM - Université de Technologie et de Management",category:"university",type:"Université Privée (Technologie)",city:"Ouagadougou",price:425000,rating:4.7,match:93,programs:[{name:"Licence Finance Comptabilité",price:425000},{name:"Licence Gestion des Projets",price:425000},{name:"Licence Économie et Statistiques Appliquées",price:425000},{name:"Licence Transport et Logistique",price:425000},{name:"Master 1 - Management / Projets / Logistique",price:750000},{name:"Master 1 - CCA (Comptabilité Contrôle Audit)",price:750000},{name:"Licence Génie Civil / BTP",price:550000},{name:"Licence Maintenance Industrielle",price:550000},{name:"Licence Électronique & Info. Industrielle",price:550000},{name:"Licence Réseaux et Télécommunications",price:550000},{name:"Licence Génie Logiciel",price:550000},{name:"Master 1 - Maintenance Industrielle (MI)",price:970000},{name:"Master 1 - Génie Mécanique / Électrique",price:970000},{name:"Master 1 - Bâtiment et Travaux Publics (BTP)",price:970000}]},
+  {id:101,name:"Lycée Saint Viateur",category:"school",type:"Lycée Privé",city:"Ouagadougou",price:380000,rating:4.9,match:95,programs:[{name:"Séries A / D / C",price:380000}]},
+  {id:110,name:"Lycée Français Saint-Exupéry (LFSE)",category:"school",type:"Ecole Internationale",city:"Ouagadougou",price:1500000,rating:4.8,match:90,programs:[{name:"Cycle Complet",price:1500000}]}
+];
+
+function fmt(n) {
+  if (n === 0) return 'Gratuit';
+  return new Intl.NumberFormat('fr-FR').format(n) + ' FCFA';
+}
+
+function initials(name) {
+  const w = name.replace(/[()]/g,'').split(/[\s\-–]+/);
+  if (w.length >= 2) return (w[0][0] + w[1][0]).toUpperCase();
+  return name.substring(0,2).toUpperCase();
+}
+
+function stars(rating) {
+  let s = '';
+  for (let i = 1; i <= 5; i++) {
+    s += `<span class="star ${i <= Math.round(rating) ? 'filled' : ''}">★</span>`;
+  }
+  return s;
+}
+
+function buildCard(inst, idx) {
+  const isFree = inst.price <= 15000;
+  const priceClass = isFree ? 'price-free' : '';
+  const delay = idx * 0.05;
+
+  const progItems = inst.programs.map(p => {
+    const pFree = p.price <= 15000;
+    return `<div class="prog-item">
+      <span class="prog-name">${p.name}</span>
+      <span class="prog-price ${pFree ? 'free' : ''}">${fmt(p.price)}</span>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="card" style="animation-delay:${delay}s" data-category="${inst.category}" data-name="${inst.name.toLowerCase()}" data-programs="${inst.programs.map(p=>p.name).join(' ').toLowerCase()}">
+    <div class="card-header">
+      <div class="card-logo">${initials(inst.name)}</div>
+      <div class="card-title-wrap">
+        <div class="card-name" title="${inst.name}">${inst.name}</div>
+        <div class="card-meta">
+          <span class="badge badge-type">${inst.type}</span>
+          <span class="badge badge-city">📍 ${inst.city}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-kpis">
+      <div class="kpi">
+        <div class="kpi-val accent">${inst.match}%</div>
+        <div class="kpi-label">Match</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val" style="display:flex;gap:1px;justify-content:center">
+          <div class="stars">${stars(inst.rating)}</div>
+        </div>
+        <div class="kpi-label">${inst.rating}/5</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val blue">${inst.programs.length}</div>
+        <div class="kpi-label">Filières</div>
+      </div>
+    </div>
+
+    <div class="programs-toggle" onclick="togglePrograms(this)">
+      <span>Voir les filières <span class="count">${inst.programs.length}</span></span>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="programs-list">${progItems}</div>
+
+    <div class="card-footer">
+      <div class="price-display">
+        <span class="price-from">À PARTIR DE</span>
+        <span class="price-val ${priceClass}">${fmt(inst.price)}</span>
+        <span class="price-unit">par an</span>
+      </div>
+      <div class="match-pill">✓ ${inst.match}% match</div>
+    </div>
+  </div>`;
+}
+
+function togglePrograms(el) {
+  const list = el.nextElementSibling;
+  const icon = el.querySelector('.toggle-icon');
+  const open = list.classList.toggle('open');
+  icon.classList.toggle('open', open);
+}
+
+let currentFilter = 'all';
+let currentSort = 'match';
+let currentSearch = '';
+
+function render() {
+  let data = [...institutes];
+
+  if (currentFilter !== 'all') data = data.filter(i => i.category === currentFilter);
+
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    data = data.filter(i =>
+      i.name.toLowerCase().includes(q) ||
+      i.type.toLowerCase().includes(q) ||
+      i.programs.some(p => p.name.toLowerCase().includes(q))
+    );
+  }
+
+  if (currentSort === 'match') data.sort((a,b) => b.match - a.match);
+  else if (currentSort === 'rating') data.sort((a,b) => b.rating - a.rating);
+  else if (currentSort === 'price-asc') data.sort((a,b) => a.price - b.price);
+  else if (currentSort === 'price-desc') data.sort((a,b) => b.price - a.price);
+  else if (currentSort === 'alpha') data.sort((a,b) => a.name.localeCompare(b.name));
+
+  const grid = document.getElementById('grid');
+  document.getElementById('shown-count').textContent = data.length;
+
+  if (data.length === 0) {
+    grid.innerHTML = `<div class="empty">
+      <div class="empty-icon">🔍</div>
+      <h3>Aucun résultat</h3>
+      <p>Essayez un autre terme ou réinitialisez les filtres.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map((inst, i) => buildCard(inst, i)).join('');
+}
+
+// Stats
+document.getElementById('total-count').textContent = institutes.length;
+document.getElementById('prog-count').textContent = institutes.reduce((s,i)=>s+i.programs.length,0);
+
+// Events
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('sort').addEventListener('change', e => {
+  currentSort = e.target.value;
+  render();
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
