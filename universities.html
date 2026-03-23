@@ -1,234 +1,1896 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universités - CURSUS</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body class="page-discovery">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* --- VARIABLES DE THEME --- */
+      :root {
+        /* Mode Sombre par défaut */
+        --bg-color: #0f1117;
+        --card-bg: #1c1f26;
+        --sidebar-bg: #161920;
+        --text-main: #ffffff;
+        --text-dim: #a0a0a0;
+        --accent: #007bff;
+        --accent-hover: #0056b3;
+        --border: #2d3139;
+        --input-bg: #252932;
+      }
 
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
+      /* Classe pour le Mode Clair */
+      .light-theme {
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --sidebar-bg: #ffffff;
+        --text-main: #1a1a1a;
+        --text-dim: #666666;
+        --accent: #007bff;
+        --border: #e0e0e0;
+        --input-bg: #f9f9f9;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        transition: all 0.3s ease;
+      }
+
+      /* --- NAVIGATION --- */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 5%;
+        background: var(--sidebar-bg);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: var(--accent);
+      }
+
+      .nav-links a {
+        color: var(--text-main);
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 0.9rem;
+      }
+
+      .theme-toggle {
+        cursor: pointer;
+        padding: 8px 15px;
+        border-radius: 20px;
+        border: 1px solid var(--accent);
+        background: transparent;
+        color: var(--accent);
+        font-weight: bold;
+      }
+
+      /* --- LAYOUT PRINCIPAL --- */
+      .main-container {
+        display: flex;
+        max-width: 1400px;
+        margin: 20px auto;
+        padding: 0 20px;
+        gap: 20px;
+      }
+
+      /* --- BARRE DE RECHERCHE ET FILTRES --- */
+      .sidebar {
+        width: 300px;
+        background: var(--sidebar-bg);
+        padding: 25px;
+        border-radius: 15px;
+        height: fit-content;
+        border: 1px solid var(--border);
+        position: sticky;
+        top: 90px;
+      }
+
+      .filter-group {
+        margin-bottom: 25px;
+      }
+
+      .filter-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+      }
+
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--input-bg);
+        color: var(--text-main);
+      }
+
+      .range-slider {
+        width: 100%;
+        accent-color: var(--accent);
+      }
+
+      .checkbox-group {
+        display: grid;
+        gap: 10px;
+      }
+
+      .checkbox-group label {
+        text-transform: none;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+
+      /* --- GRILLE DE CARTES --- */
+      .content-area {
+        flex: 1;
+      }
+
+      .search-header {
+        background: var(--accent);
+        padding: 40px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+        color: white;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+      }
+
+      /* --- STYLE DE LA CARTE --- */
+      .card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+      }
+
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+
+      .card-logo {
+        width: 50px;
+        height: 50px;
+        background: #fff;
+        color: #000;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      .match-badge {
+        background: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+
+      .card h3 {
+        margin: 10px 0 5px 0;
+        font-size: 1.2rem;
+      }
+
+      .card .info {
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        margin-bottom: 5px;
+      }
+
+      .card .rating {
+        color: #ffc107;
+        margin: 10px 0;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .card .price {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-top: auto;
+        padding-top: 15px;
+      }
+
+      .btn-view {
+        margin-top: 15px;
+        padding: 12px;
+        background: var(--accent);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+
+      /* --- MODALES --- */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .modal:target {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .modal-content {
+        background: var(--card-bg);
+        max-width: 900px;
+        width: 100%;
+        margin-top: 50px;
+        padding: 40px;
+        border-radius: 20px;
+        position: relative;
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 30px;
+        text-decoration: none;
+        color: var(--text-dim);
+      }
+
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: 30px;
+      }
+
+      .contact-form input,
+      .contact-form textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 10px;
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-main);
+      }
+
+      /* --- RESPONSIVE --- */
+      @media (max-width: 992px) {
+        .main-container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          position: static;
+        }
+
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .nav-links {
+          display: none;
+        }
+
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="logo">
+        <img
+          src="./WhatsApp Image 2026-03-16 at 22.43.13.jpeg"
+          alt="Cursus"
+          width="100px"
+          id="logg"
+          style="border-radius: 35%"
+        />
+      </div>
+      <div
+        class="nav-links"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+        "
+      >
+        <h1>Universités</h1>
+        <button
+          class="theme-toggle"
+          onclick="
+            document.body.classList.toggle('light-theme');
+            let jour = document.getElementById('logg');
+            let nuit = './WhatsApp Image 2026-03-16 at 22.43.13.jpeg';
+            if (document.body.classList.contains('light-theme')) {
+              jour.src = './WhatsApp Image 2026-03-16 at 10.48.32.jpeg';
+            } else {
+              jour.src = nuit;
+            }
+          "
+        >
+          Thème Jour/Nuit
+        </button>
+      </div>
+    </nav>
+    <div class="main-container">
+      <aside class="sidebar">
+        <div class="filter-group">
+          <label>Rechercher</label>
+          <input type="text" placeholder="Nom, filière..." />
+        </div>
+
+        <div class="filter-group">
+          <label
+            >Scolarité max (FCFA) pour une année :
+            <span id="valu">0</span></label
+          >
+          <input
+            id="val"
+            type="range"
+            class="range-slider"
+            min="0"
+            max="4000000"
+            step="20000"
+            value="0"
+          />
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 0.8rem;
+              margin-top: 5px;
+            "
+          >
+            <span>0</span><span>4M</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Ville</label>
+          <select>
+            <option>Toutes les villes</option>
+            <option>Ouagadougou</option>
+            <option>Bobo-Dioulasso</option>
+            <option>Koudougou</option>
+            <option>Dédougou</option>
+            <option>Autre</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Diplômes </label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" /> Licence </label>
+            <label><input type="checkbox" /> Master </label>
+            <label><input type="checkbox" /> Doctorat </label>
+            <label><input type="checkbox" /> Ingénierie</label>
+          </div>
+        </div>
+      </aside>
+
+      <main class="content-area">
+        <div class="search-header">
+          <h1>Toutes les Institutions</h1>
+          <p>Explorez les meilleurs établissements du Burkina Faso</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-top">
+              <div class="card-logo">
+                <img src="./images (2).jpeg" alt="UAB" width="88%" />
+              </div>
+              <span class="match-badge">98% Match</span>
+            </div>
+            <h3>Université U-Auben</h3>
+            <p class="info">
+              📍 Ouagadougou , au 1.200 logement et Bobo-Dioulasso , à Colma
+            </p>
+            <p class="info">🎓 Université Privée</p>
+            <div class="rating">⭐ 4.8</div>
+            <p class="price">450 000 FCFA / an</p>
+            <a href="#modal1" class="btn-view">Voir les détails</a>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <div class="card-logo">
+                <img src="./logo-UTM-WEB.png" alt="UTM" width="88%" />
+              </div>
+              <span class="match-badge">95% Match</span>
+            </div>
+            <h3>Université de technologie et de Management</h3>
+            <p class="info">📍 Ouagadougou, à Ouaga 2.000</p>
+            <p class="info">🎓 Université Privée</p>
+            <div class="rating">⭐ 4.9</div>
+            <p class="price">750 000 FCFA / an</p>
+            <a href="#modal2" class="btn-view">Voir les détails</a>
+          </div>
+          <div class="card">
+            <div class="card-top">
+              <div class="card-logo">
+                <img
+                  src="./IST-Institut-Superieur-de-Technologies-ouagadougou-burkina-faso-formations-afrique-orientation-logo.jpg"
+                  alt="IST"
+                  width="90%"
+                />
+              </div>
+              <span class="match-badge">98% Match</span>
+            </div>
+            <h3>Institue Supérieur de Technologie</h3>
+            <p class="info">
+              📍 Ouagadougou , à Ouaga 2.000 , à Gounghin et à Tampouy
+            </p>
+            <p class="info">🎓 Université Privée</p>
+            <div class="rating">⭐ 4.8</div>
+            <p class="price">350 000 FCFA / an</p>
+            <a href="#modal3" class="btn-view">Voir les détails</a>
+          </div>
+          <div class="card">
+            <div class="card-top">
+              <div class="card-logo">
+                <img src="./images (1).jpeg" alt="USTA" width="88%" />
+              </div>
+              <span class="match-badge">98% Match</span>
+            </div>
+            <h3>Université Saint Thomas d'Aquin</h3>
+            <p class="info">📍 Ouagadougou , à Saaba</p>
+            <p class="info">🎓 Université Privée</p>
+            <div class="rating">⭐ 4.8</div>
+            <p class="price">600 000 FCFA / an</p>
+            <a href="#modal4" class="btn-view">Voir les détails</a>
+          </div>
+          <div class="card">
+            <div class="card-top">
+              <div class="card-logo">
+                <img src="./images.jpeg" alt="UA" width="88%" />
+              </div>
+              <span class="match-badge">98% Match</span>
+            </div>
+            <h3>Université de l'Unité Africaine</h3>
+            <p class="info">📍 Ouagadougou, à la ZAD</p>
+            <p class="info">🎓 Université Privée</p>
+            <div class="rating">⭐ 4.8</div>
+            <p class="price">850 000 FCFA / an</p>
+            <a href="#modal5" class="btn-view">Voir les détails</a>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <header class="navbar glass-effect">
-        <div class="container nav-container">
-            <a href="index.html" class="logo">
-                <img src="logo.png" alt="CURSUS Logo" class="logo-icon">
-                <span class="logo-text">cursus</span>
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <a href="#" class="close-modal">&times;</a>
+        <img src="./images (2).jpeg" alt="UAB" width="18%" />
+
+        <h2>Université U-Auben</h2>
+        <p style="color: var(--accent)">Université Privée • Ouagadougou</p>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            font-family: sans-serif;
+          "
+        >
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./u-auben-ouaga-devanture.jpg"
+              alt="Devanture U-Auben Ouaga"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Découvrez le campus moderne et nos facultés de sciences.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./En-toges.jpg"
+              alt="Etudiants en toges"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Un centre historique dévoué à la réussite de ses étudiants.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./257224294_2527260810753309_3185084998366612586_n-696x420.jpg"
+              alt="Devanture U-Auben Bobo-Dioulasso"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <h3 style="margin: 0 0 10px 0">Université C</h3>
+              <p style="font-size: 14px; color: #666">
+                Spécialisée dans les nouvelles technologies et l'IA.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <a
+          href="https://u-auben.com/"
+          target="_blank"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            margin: 10px 0;
+          "
+          onmouseover="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+            this.style.transform = 'translateY(-2px)';
+          "
+          onmouseout="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            this.style.transform = 'translateY(0)';
+          "
+        >
+          <span style="font-size: 1.1rem">💻</span>
+          Consulter leur site
+        </a>
+
+        <div class="modal-grid">
+          <div class="details-text">
+            <h4>Filières & Spécialités</h4>
+            <p class="info">
+              Le pôle des Sciences et Technologies (UFR-ST / High Tech) regroupe
+              les filières du Génie Informatique, du Génie Civil (BTP), de
+              l'Électricité Industrielle, des Mines et Géologie, ainsi que des
+              spécialités en Agronomie, Eau-Hygiène-Assainissement (EHA) et
+              Agroalimentaire. Le pôle des Sciences Économiques et de Gestion
+              (UFR-SEG / Business School) propose des cursus en
+              Finance-Comptabilité, Banque-Assurance, Marketing, Gestion des
+              Ressources Humaines, Gestion de Projets et Transport-Logistique.
+              Enfin, l'université dispose de pôles en Sciences Juridiques et
+              Politiques (UFR-SJP) couvrant le Droit Privé, le Droit Public, la
+              Diplomatie et les Relations Internationales, ainsi qu'un pôle
+              Lettres, Langues et Sciences Humaines (UFR-LLSH) incluant la
+              Communication, la Sociologie, la Psychologie, l'Assistanat de
+              Direction Bilingue et les Études Anglophones.
+            </p>
+            <br />
+
+            <div
+              style="
+                overflow-x: auto;
+                margin: 20px 0;
+                border-radius: 12px;
+                border: 1px solid #2d3139;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+              "
+            >
+              <table
+                style="
+                  width: 100%;
+                  border-collapse: collapse;
+                  background-color: #1c1f26;
+                  color: #ffffff;
+                  font-family: &quot;Segoe UI&quot;, sans-serif;
+                  font-size: 0.9rem;
+                  min-width: 650px;
+                "
+              >
+                <thead>
+                  <tr
+                    style="
+                      background-color: #007bff;
+                      color: #ffffff;
+                      text-align: left;
+                    "
+                  >
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Unités de Formation (UFR)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Licence 1
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Licence 2
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Licence 3
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Master 1
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Master 2
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >ISIG High-Tech</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Informatique, SIG, Réseaux</span
+                      >
+                    </td>
+                    <td style="padding: 15px">600 000</td>
+                    <td style="padding: 15px">675 000</td>
+                    <td style="padding: 15px">750 000</td>
+                    <td style="padding: 15px">920 000</td>
+                    <td style="padding: 15px">920 000</td>
+                  </tr>
+                  <tr
+                    style="
+                      border-bottom: 1px solid #2d3139;
+                      background-color: rgba(255, 255, 255, 0.02);
+                    "
+                  >
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Business School (SEG)</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Gestion, Finance, Compta</span
+                      >
+                    </td>
+                    <td style="padding: 15px">505 000</td>
+                    <td style="padding: 15px">565 000</td>
+                    <td style="padding: 15px">705 000</td>
+                    <td style="padding: 15px">852 500</td>
+                    <td style="padding: 15px">852 500</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Droit & Sciences Po</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Droit Privé/Public, Diplomatie</span
+                      >
+                    </td>
+                    <td style="padding: 15px">530 000</td>
+                    <td style="padding: 15px">590 000</td>
+                    <td style="padding: 15px">730 000</td>
+                    <td style="padding: 15px">850 000</td>
+                    <td style="padding: 15px">850 000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr style="background-color: rgba(0, 123, 255, 0.1)">
+                    <td
+                      colspan="6"
+                      style="
+                        padding: 12px;
+                        font-size: 0.8rem;
+                        color: #a0a0a0;
+                        text-align: center;
+                      "
+                    >
+                      * Frais d'inscription : 50 000 FCFA + Frais de dossier :
+                      15 000 FCFA. Pénalité de 10% en cas de retard.
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <h4>Informations de contact</h4>
+            <p class="info">📞 +226 25 30 00 00</p>
+            <p class="info">📧 info@uason.bf</p>
+            <p class="info">🌐 www.uason.bf</p>
+          </div>
+
+          <div class="contact-form">
+            <h4>Contacter l'établissement</h4>
+            <form>
+              <input type="text" placeholder="Nom & Prénom" required />
+              <input type="email" placeholder="Votre Email" required />
+              <input type="tel" placeholder="Téléphone" />
+              <textarea rows="4" placeholder="Votre message..."></textarea>
+              <button
+                type="submit"
+                class="btn-view"
+                style="width: 100%; border: none; cursor: pointer"
+              >
+                Envoyer
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal3" class="modal">
+      <div class="modal-content">
+        <a href="#" class="close-modal">&times;</a>
+        <img
+          src="./IST-Institut-Superieur-de-Technologies-ouagadougou-burkina-faso-formations-afrique-orientation-logo.jpg"
+          alt="Logo IST"
+          width="18%"
+        />
+        <h2>Institue Supérieur de Technologie</h2>
+        <p style="color: var(--accent)">Enseignement Supérieur • Ouagadougou</p>
+
+        <div class="modal-grid">
+          <div class="details-text">
+            <h4>Options et filière</h4>
+            <p class="info">
+              Le pôle Sciences et Technologies est le cœur de métier de
+              l'institut, proposant des filières pointues comme le Génie Civil
+              (Bâtiment et Travaux Publics), le Génie Électrique
+              (Électrotechnique, Électronique et Informatique Industrielle),
+              ainsi que le Génie Industriel (Maintenance Industrielle, Mécanique
+              et Productique). Ce pôle inclut également des secteurs
+              stratégiques tels que le Génie Minier (Géologie, Exploitation), le
+              Génie Énergétique (Énergies Renouvelables), le Génie Biomédical et
+              l'Agroalimentaire (Nutrition, Sécurité Sanitaire). L'informatique
+              y est aussi très présente via les Réseaux et Systèmes
+              Informatiques. Le pôle Sciences de Gestion (souvent associé à
+              l'entité UBS) complète cette offre avec des formations en
+              Finance-Comptabilité, Marketing et Gestion Commerciale, Gestion
+              des Ressources Humaines, et Gestion des Projets. On y retrouve
+              également des spécialités en Transport, Logistique et Transit, en
+              Banque et Microfinance, ainsi qu'en Communication d’Entreprise et
+              Assistanat de Direction Bilingue.
+            </p>
+            <br />
+
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                padding: 20px;
+                font-family: sans-serif;
+              "
+            >
+              <div
+                style="
+                  width: 250px;
+                  border: 1px solid #ddd;
+                  border-radius: 10px;
+                  overflow: hidden;
+                  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+                "
+              >
+                <img
+                  src="./IST-CAMPUS-de-Ouaga-scaled.jpg"
+                  alt="Devanture IST Ouaga"
+                  style="width: 100%; display: block"
+                />
+                <div style="padding: 15px">
+                  <p style="font-size: 14px; color: #666">
+                    Découvrez le campus moderne et nos facultés de sciences.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                style="
+                  width: 250px;
+                  border: 1px solid #ddd;
+                  border-radius: 10px;
+                  overflow: hidden;
+                  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+                "
+              >
+                <img
+                  src="./Stone.webp"
+                  alt="Etudiants en génie minier"
+                  style="width: 100%; display: block"
+                />
+                <div style="padding: 15px">
+                  <p style="font-size: 14px; color: #666">
+                    Un centre historique dévoué à la réussite de ses étudiants.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                style="
+                  width: 250px;
+                  border: 1px solid #ddd;
+                  border-radius: 10px;
+                  overflow: hidden;
+                  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+                "
+              >
+                <img
+                  src="./IST-Institut-Superieur-de-Technologies-ouagadougou-burkina-faso-formations-afrique-orientation.jpg"
+                  alt="Affiche de l'unniversité "
+                  style="width: 100%; display: block"
+                />
+                <div style="padding: 15px">
+                  <h3 style="margin: 0 0 10px 0">Université C</h3>
+                  <p style="font-size: 14px; color: #666">
+                    Spécialisée dans les nouvelles technologies et l'IA.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://istburkina.education/"
+              target="_blank"
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 16px;
+                background-color: rgba(59, 130, 246, 0.1);
+                color: #3b82f6;
+                text-decoration: none;
+                font-size: 0.85rem;
+                font-weight: 600;
+                border-radius: 50px;
+                border: 1px solid rgba(59, 130, 246, 0.3);
+                transition: all 0.3s ease;
+                margin: 10px 0;
+              "
+              onmouseover="
+                this.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                this.style.transform = 'translateY(-2px)';
+              "
+              onmouseout="
+                this.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                this.style.transform = 'translateY(0)';
+              "
+            >
+              <span style="font-size: 1.1rem">💻</span>
+              Consulter leur site
             </a>
-            <nav class="nav-links">
-                <a href="index.html">Accueil</a>
-                <a href="universities.html" class="active">Universités</a>
-                <a href="schools.html">Lycées & Collèges</a>
-                <a href="#" id="partnerNavLink">Espace Partenaire</a>
-            </nav>
-            <div class="nav-actions">
-                <button id="themeToggle" class="btn btn-icon glass-effect">
-                    <i class='bx bx-moon'></i>
-                </button>
-                <button id="loginBtn" class="btn btn-outline">Se connecter</button>
-                <button id="signupBtn" class="btn btn-primary">S'inscrire</button>
-            </div>
-            <div class="mobile-menu-btn">
-                <i class='bx bx-menu'></i>
-            </div>
-        </div>
-    </header>
 
-    <div class="mobile-menu glass-effect" id="mobileMenu">
-        <div class="mobile-menu-content">
-            <button class="menu-close">&times;</button>
-            <nav class="mobile-nav">
-                <a href="index.html">Accueil</a>
-                <a href="universities.html" class="active">Universités</a>
-                <a href="schools.html">Lycées & Collèges</a>
-                <a href="#" id="partnerMobileLink">Espace Partenaire</a>
-            </nav>
-            <div class="mobile-actions">
-                <!-- Les boutons seront injectés dynamiquement par app.js -->
+            <div
+              style="
+                overflow-x: auto;
+                margin: 20px 0;
+                border-radius: 12px;
+                border: 1px solid #2d3139;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+              "
+            >
+              <table
+                style="
+                  width: 100%;
+                  border-collapse: collapse;
+                  background-color: #1c1f26;
+                  color: #ffffff;
+                  font-family: &quot;Segoe UI&quot;, sans-serif;
+                  font-size: 0.9rem;
+                  min-width: 650px;
+                "
+              >
+                <thead>
+                  <tr
+                    style="
+                      background-color: #007bff;
+                      color: #ffffff;
+                      text-align: left;
+                    "
+                  >
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Départements
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L1 (Année 1)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L2 (Année 2)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L3 (Année 3)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Master 1
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Master 2
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Sciences de Gestion</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Finance, Marketing, Transport</span
+                      >
+                    </td>
+                    <td style="padding: 15px">360 000</td>
+                    <td style="padding: 15px">360 000</td>
+                    <td style="padding: 15px">550 000</td>
+                    <td style="padding: 15px">750 000</td>
+                    <td style="padding: 15px">850 000</td>
+                  </tr>
+                  <tr
+                    style="
+                      border-bottom: 1px solid #2d3139;
+                      background-color: rgba(255, 255, 255, 0.02);
+                    "
+                  >
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Sciences & Technologies</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Réseaux, Génie Civil, Mines</span
+                      >
+                    </td>
+                    <td style="padding: 15px">500 000</td>
+                    <td style="padding: 15px">500 000</td>
+                    <td style="padding: 15px">600 000</td>
+                    <td style="padding: 15px">750 000</td>
+                    <td style="padding: 15px">850 000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr style="background-color: rgba(0, 123, 255, 0.1)">
+                    <td
+                      colspan="6"
+                      style="
+                        padding: 12px;
+                        font-size: 0.8rem;
+                        color: #a0a0a0;
+                        text-align: center;
+                      "
+                    >
+                      * Frais d'inscription : 45 000 FCFA (Licence) / 60 000
+                      FCFA (Master). Possibilité de paiement échelonné.
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
+
+            <h4>Informations de contact</h4>
+            <p class="info">📞 +226 25 35 00 00</p>
+            <p class="info">📧 administration@lsv.bf</p>
+          </div>
+          <div class="contact-form">
+            <h4>Formulaire d'inscription</h4>
+            <form>
+              <input type="text" placeholder="Nom complet" />
+              <input type="email" placeholder="Email" />
+              <textarea
+                rows="4"
+                placeholder="Demande de renseignements..."
+              ></textarea>
+              <button
+                type="submit"
+                class="btn-view"
+                style="width: 100%; border: none"
+              >
+                Envoyer
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+    <div id="modal2" class="modal">
+      <div class="modal-content">
+        <a href="#" class="close-modal">&times;</a>
+        <img src="./logo-UTM-WEB.png" alt="UTM" width="28%" />
 
-    <main>
-        <section class="discovery-header section">
-            <div class="container">
-                <h1>Toutes les Universités</h1>
-                <p>Explorez les meilleurs établissements d'enseignement supérieur au Burkina Faso.</p>
-                
-                <div class="search-bar glass-effect" style="margin-top: 2rem;">
-                    <i class='bx bx-search'></i>
-                    <input type="text" id="mainSearch" placeholder="Rechercher une université, une filière...">
-                    <button class="btn btn-primary">Rechercher</button>
-                </div>
+        <h2>Université de Technologie et de Managent</h2>
+        <p style="color: var(--accent)">Université privé</p>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            font-family: sans-serif;
+          "
+        >
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./Accueil.jpg"
+              alt="Devanture UTM Ouaga"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Découvrez le campus moderne et nos facultés de sciences.
+              </p>
             </div>
-        </section>
+          </div>
 
-        <section id="discover" class="section bg-light">
-            <div class="container discover-layout">
-                <!-- Sidebar Filtres (Caché sur mobile ?) -->
-                <aside class="sidebar glass-effect">
-                    <div class="filter-group">
-                        <label>Scolarité max (FCFA)</label>
-                        <input type="range" id="priceFilter" min="0" max="2000000" step="50000" value="2000000">
-                        <div class="range-values">
-                            <span>0</span>
-                            <span id="priceValue">2M</span>
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>Ville</label>
-                        <select id="regionFilter" class="glass-effect">
-                            <option value="all">Toutes les villes</option>
-                            <option value="Ouagadougou">Ouagadougou</option>
-                            <option value="Bobo-Dioulasso">Bobo-Dioulasso</option>
-                            <option value="Koudougou">Koudougou</option>
-                            <option value="Dédougou">Dédougou</option>
-                            <option value="Dori">Dori</option>
-                            <option value="Kombissiri">Kombissiri</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group filter-university">
-                        <label>Diplômes</label>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="diploma" value="Licence"> Licence</label>
-                            <label><input type="checkbox" name="diploma" value="Master"> Master</label>
-                            <label><input type="checkbox" name="diploma" value="Doctorat"> Doctorat</label>
-                            <label><input type="checkbox" name="diploma" value="Ingénierie"> Ingénierie</label>
-                        </div>
-                    </div>
-                </aside>
-
-                <!-- Grille des résultats -->
-                <div class="results-container">
-                    <div class="results-header">
-                        <h3 id="resultsCount">Recherche en cours...</h3>
-                    </div>
-                    <div id="institutesGrid" class="institutes-grid">
-                        <!-- Les cartes seront injectées ici par JS -->
-                    </div>
-                </div>
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./apero_rtb-12-678x381.jpeg"
+              alt="Etudiants"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Un centre historique dévoué à la réussite de ses étudiants.
+              </p>
             </div>
-        </section>
-    </main>
+          </div>
 
-    <footer class="footer">
-        <div class="container footer-grid">
-            <div class="footer-brand">
-                <a href="index.html" class="logo">
-                    <img src="logo.png" alt="CURSUS Logo" class="logo-icon">
-                    <span class="logo-text">cursus</span>
-                </a>
-                <p>La première plateforme intelligente d'orientation scolaire et universitaire au Burkina Faso.</p>
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./653711438_1247510820896786_6676606770794922412_n.jpg"
+              alt="Nouveau diplomés"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <h3 style="margin: 0 0 10px 0">Université C</h3>
+              <p style="font-size: 14px; color: #666">
+                Spécialisée dans les nouvelles technologies et l'IA.
+              </p>
             </div>
-            <div class="footer-links">
-                <h4>Plateforme</h4>
-                <a href="universities.html">Universités</a>
-                <a href="schools.html">Lycées & Collèges</a>
-            </div>
-            <div class="footer-links">
-                <h4>Entreprise</h4>
-                <a href="#" id="partnerFooterLink">Partenaires</a>
-                <a href="#">À propos</a>
-            </div>
+          </div>
         </div>
-    </footer>
 
-    <!-- Modales -->
-    <div id="detailsModal" class="modal-overlay">
-        <div class="modal-content glass-effect modal-large">
-            <button class="modal-close">&times;</button>
-            <div id="modalDetailsContent"></div>
+        <a
+          href="https://utmbf.com/"
+          target="_blank"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            margin: 10px 0;
+          "
+          onmouseover="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+            this.style.transform = 'translateY(-2px)';
+          "
+          onmouseout="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            this.style.transform = 'translateY(0)';
+          "
+        >
+          <span style="font-size: 1.1rem">💻</span>
+          Consulter leur site
+        </a>
+
+        <div class="modal-grid">
+          <div class="details-text">
+            <h4>Filières & Spécialités</h4>
+            <p class="info">
+              Le pôle Technologies regroupe les filières du Génie Civil (BTP),
+              du Génie Industriel (Maintenance, Mécanique et Productique), du
+              Génie Électrique (Électrotechnique, Électronique, Réseaux et
+              Télécommunications) ainsi que l'Informatique (Génie Logiciel). Le
+              pôle Management propose, quant à lui, des cursus en Finance
+              Comptabilité, Gestion des Projets, Transport et Logistique, ainsi
+              qu'en Économie et Statistiques Appliquées.
+            </p>
+            <br />
+            <div
+              style="
+                overflow-x: auto;
+                margin: 20px 0;
+                border-radius: 12px;
+                border: 1px solid #2d3139;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+              "
+            >
+              <table
+                style="
+                  width: 100%;
+                  border-collapse: collapse;
+                  background-color: #1c1f26;
+                  color: #ffffff;
+                  font-family: &quot;Segoe UI&quot;, sans-serif;
+                  font-size: 0.9rem;
+                  min-width: 600px;
+                "
+              >
+                <thead>
+                  <tr
+                    style="
+                      background-color: #007bff;
+                      color: #ffffff;
+                      text-align: left;
+                    "
+                  >
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Pôles & Filières
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L1 (1ère année)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L2 (2ème année)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L3 (3ème année)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      M1 (Master 1)
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      M2 (Master 2)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Management & Gestion</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Finance, Marketing, RH</span
+                      >
+                    </td>
+                    <td style="padding: 15px">450 000</td>
+                    <td style="padding: 15px">450 000</td>
+                    <td style="padding: 15px">500 000</td>
+                    <td style="padding: 15px">750 000</td>
+                    <td style="padding: 15px">850 000</td>
+                  </tr>
+                  <tr
+                    style="
+                      border-bottom: 1px solid #2d3139;
+                      background-color: rgba(255, 255, 255, 0.02);
+                    "
+                  >
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Génie Informatique / Réseaux</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Systèmes, Software, Réseaux</span
+                      >
+                    </td>
+                    <td style="padding: 15px">750 000</td>
+                    <td style="padding: 15px">850 000</td>
+                    <td style="padding: 15px">1 000 000</td>
+                    <td style="padding: 15px">1 200 000</td>
+                    <td style="padding: 15px">1 500 000</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Génie Civil / Mines</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Topographie, BTP, Mines</span
+                      >
+                    </td>
+                    <td style="padding: 15px">600 000</td>
+                    <td style="padding: 15px">600 000</td>
+                    <td style="padding: 15px">700 000</td>
+                    <td style="padding: 15px">950 000</td>
+                    <td style="padding: 15px">1 050 000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr style="background-color: rgba(0, 123, 255, 0.1)">
+                    <td
+                      colspan="6"
+                      style="
+                        padding: 12px;
+                        font-size: 0.8rem;
+                        color: #a0a0a0;
+                        text-align: center;
+                      "
+                    >
+                      * Tarifs indicatifs en FCFA. Prévoir environ 50 000 FCFA
+                      de frais d'inscription annuels.
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <h4>Informations de contact</h4>
+            <p class="info">📞 +226 25 30 00 00</p>
+            <p class="info">📧 info@uason.bf</p>
+            <p class="info">🌐 www.uason.bf</p>
+          </div>
+
+          <div class="contact-form">
+            <h4>Contacter l'établissement</h4>
+            <form>
+              <input type="text" placeholder="Nom & Prénom" required />
+              <input type="email" placeholder="Votre Email" required />
+              <input type="tel" placeholder="Téléphone" />
+              <textarea rows="4" placeholder="Votre message..."></textarea>
+              <button
+                type="submit"
+                class="btn-view"
+                style="width: 100%; border: none; cursor: pointer"
+              >
+                Envoyer
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+    <div id="modal4" class="modal">
+      <div class="modal-content">
+        <a href="#" class="close-modal">&times;</a>
+        <img src="./images (1).jpeg" alt="USTA" width="18%" />
 
-    <!-- Modale d'Add Institute (Partenaire) -->
-    <div id="partnerModal" class="modal-overlay">
-        <div class="modal-content glass-effect modal-large">
-            <button class="modal-close">&times;</button>
-            <div class="auth-form-container">
-                <h2>Ajouter votre établissement</h2>
-                <form id="addInstituteForm">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label for="instName">Nom</label>
-                            <input type="text" id="instName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="instCategory">Catégorie</label>
-                            <select id="instCategory" class="glass-effect">
-                                <option value="university">Université</option>
-                                <option value="school">Lycée / Collège</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="instPrograms">Programmes (séparés par des virgules)</label>
-                        <input type="text" id="instPrograms" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-full">Soumettre</button>
-                </form>
+        <h2>Université Saint Thomas d'Aquin'</h2>
+        <p style="color: var(--accent)">Université privé</p>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            font-family: sans-serif;
+          "
+        >
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./WhatsApp Image 2026-03-18 at 10.24.31.jpeg"
+              alt="Batiment de l'Université "
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Découvrez le campus moderne et nos facultés de sciences.
+              </p>
             </div>
+          </div>
+
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./WhatsApp Image 2026-03-18 at 10.24.31 (1).jpeg"
+              alt="Batiment de l'unniversité"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Un centre historique dévoué à la réussite de ses étudiants.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./USTA-UNE.jpg"
+              alt="Bureau des élèves de l'USTA"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <h3 style="margin: 0 0 10px 0">Université C</h3>
+              <p style="font-size: 14px; color: #666">
+                Spécialisée dans les nouvelles technologies et l'IA.
+              </p>
+            </div>
+          </div>
         </div>
-    </div>
 
-    <!-- Modales d'authentification -->
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-content glass-effect">
-            <button class="modal-close">&times;</button>
-            
-            <!-- Formulaire de Connexion -->
-            <div id="loginForm" class="auth-form-container">
-                <h2>Bon retour !</h2>
-                <p>Connectez-vous pour accéder à vos favoris.</p>
-                <form>
-                    <div class="form-group">
-                        <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" placeholder="votre@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPass">Mot de passe</label>
-                        <input type="password" id="loginPass" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-full">Se connecter</button>
-                </form>
-                <p class="auth-switch">Pas encore de compte ? <a href="#" id="switchToSignup">S'inscrire</a></p>
+        <a
+          href="https://usta.bf/"
+          target="_blank"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            margin: 10px 0;
+          "
+          onmouseover="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+            this.style.transform = 'translateY(-2px)';
+          "
+          onmouseout="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            this.style.transform = 'translateY(0)';
+          "
+        >
+          <span style="font-size: 1.1rem">💻</span>
+          Consulter leur site
+        </a>
+
+        <div class="modal-grid">
+          <div class="details-text">
+            <h4>Filières & Spécialités</h4>
+            <p class="info">
+              Le pôle de la Faculté des Sciences de la Santé (F2S) est l'un des
+              plus sollicités, proposant des cursus complets en Médecine,
+              Pharmacie, Biologie Médicale et des licences professionnelles en
+              Sciences Infirmières et Obstétricales (Maïeutique). Le pôle des
+              Sciences Juridiques et Politiques (FSJP) offre des parcours en
+              Droit Privé, Droit Public, ainsi qu'en Sciences Politiques,
+              préparant aux carrières juridiques et administratives. Enfin, le
+              pôle des Sciences Économiques et de Gestion (FSEG) regroupe les
+              filières classiques et professionnalisantes telles que la Gestion
+              des Entreprises et des Administrations, la Finance-Comptabilité,
+              le Marketing, et l'Économie Agricole. L'université dispose
+              également d'une filière en Sciences et Technologies axée sur
+              l'Informatique de Gestion.
+            </p>
+            <br />
+
+            <div
+              style="
+                overflow-x: auto;
+                margin: 20px 0;
+                border-radius: 12px;
+                border: 1px solid #2d3139;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+              "
+            >
+              <table
+                style="
+                  width: 100%;
+                  border-collapse: collapse;
+                  background-color: #1c1f26;
+                  color: #ffffff;
+                  font-family: &quot;Segoe UI&quot;, sans-serif;
+                  font-size: 0.9rem;
+                  min-width: 650px;
+                "
+              >
+                <thead>
+                  <tr
+                    style="
+                      background-color: #007bff;
+                      color: #ffffff;
+                      text-align: left;
+                    "
+                  >
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Facultés & Filières
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L1 / Année 1
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L2 / Année 2
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      L3 / Année 3
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Master 1
+                    </th>
+                    <th style="padding: 15px; border-bottom: 2px solid #2d3139">
+                      Master 2
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Sciences de la Santé</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Médecine, Pharmacie</span
+                      >
+                    </td>
+                    <td style="padding: 15px">900 000</td>
+                    <td style="padding: 15px">900 000</td>
+                    <td style="padding: 15px">900 000</td>
+                    <td style="padding: 15px">1 200 000</td>
+                    <td style="padding: 15px">1 200 000</td>
+                  </tr>
+                  <tr
+                    style="
+                      border-bottom: 1px solid #2d3139;
+                      background-color: rgba(255, 255, 255, 0.02);
+                    "
+                  >
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >Droit / SEG</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Sciences Juridiques, Éco</span
+                      >
+                    </td>
+                    <td style="padding: 15px">500 000</td>
+                    <td style="padding: 15px">500 000</td>
+                    <td style="padding: 15px">550 000</td>
+                    <td style="padding: 15px">800 000</td>
+                    <td style="padding: 15px">900 000</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td style="padding: 15px">
+                      <strong style="color: #007bff; display: block"
+                        >SHS / Bio</strong
+                      >
+                      <span style="font-size: 0.75rem; color: #a0a0a0"
+                        >Lettres, Psychologie, Bio</span
+                      >
+                    </td>
+                    <td style="padding: 15px">450 000</td>
+                    <td style="padding: 15px">450 000</td>
+                    <td style="padding: 15px">500 000</td>
+                    <td style="padding: 15px">750 000</td>
+                    <td style="padding: 15px">850 000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr style="background-color: rgba(0, 123, 255, 0.1)">
+                    <td
+                      colspan="6"
+                      style="
+                        padding: 12px;
+                        font-size: 0.8rem;
+                        color: #a0a0a0;
+                        text-align: center;
+                      "
+                    >
+                      * Les frais de scolarité à l'USTA sont payables en
+                      plusieurs tranches. Notez que les frais de thèse ne sont
+                      pas inclus.
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
 
-            <!-- Formulaire d'Inscription -->
-            <div id="signupForm" class="auth-form-container" style="display: none;">
-                <h2>Créer un compte</h2>
-                <p>Rejoignez la communauté CURSUS dès aujourd'hui.</p>
-                <form>
-                    <div class="form-group">
-                        <label for="signupName">Nom complet</label>
-                        <input type="text" id="signupName" placeholder="Jean Dupont" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail">Email</label>
-                        <input type="email" id="signupEmail" placeholder="votre@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPass">Mot de passe</label>
-                        <input type="password" id="signupPass" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-full">Créer mon compte</button>
-                </form>
-                <p class="auth-switch">Déjà inscrit ? <a href="#" id="switchToLogin">Se connecter</a></p>
-            </div>
+            <h4>Informations de contact</h4>
+            <p class="info">📞 +226 25 30 00 00</p>
+            <p class="info">📧 info@uason.bf</p>
+            <p class="info">🌐 www.uason.bf</p>
+          </div>
+
+          <div class="contact-form">
+            <h4>Contacter l'établissement</h4>
+            <form>
+              <input type="text" placeholder="Nom & Prénom" required />
+              <input type="email" placeholder="Votre Email" required />
+              <input type="tel" placeholder="Téléphone" />
+              <textarea rows="4" placeholder="Votre message..."></textarea>
+              <button
+                type="submit"
+                class="btn-view"
+                style="width: 100%; border: none; cursor: pointer"
+              >
+                Envoyer
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+    <div id="modal5" class="modal">
+      <div class="modal-content">
+        <a href="#" class="close-modal">&times;</a>
+        <img src="./images.jpeg" alt="UA" width="18%" />
 
-    <script src="data.html"></script>
-    <script src="app.js"></script>
-</body>
+        <h2>Université de l'Unité Africaine</h2>
+        <p style="color: var(--accent)">Université privé</p>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            font-family: sans-serif;
+          "
+        >
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./images (4).jpeg"
+              alt="Etudiants"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Découvrez le campus moderne et nos facultés de sciences.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./téléchargement.jpeg"
+              alt="Etudiants en toges"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <p style="font-size: 14px; color: #666">
+                Un centre historique dévoué à la réussite de ses étudiants.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style="
+              width: 250px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <img
+              src="./Des-etudiants-de-lUniversite-de-lUnite-africaine.jpg"
+              alt="Etudiants"
+              style="width: 100%; display: block"
+            />
+            <div style="padding: 15px">
+              <h3 style="margin: 0 0 10px 0">Université C</h3>
+              <p style="font-size: 14px; color: #666">
+                Spécialisée dans les nouvelles technologies et l'IA.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <a
+          href="https://uaburkina.com/"
+          target="_blank"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            margin: 10px 0;
+          "
+          onmouseover="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+            this.style.transform = 'translateY(-2px)';
+          "
+          onmouseout="
+            this.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            this.style.transform = 'translateY(0)';
+          "
+        >
+          <span style="font-size: 1.1rem">💻</span>
+          Consulter leur site
+        </a>
+
+        <div class="modal-grid">
+          <div class="details-text">
+            <h4>Filières & Spécialités</h4>
+            <p class="info">
+              Le pôle Business School (Management) est le cœur historique de
+              l'institution, proposant des filières d'excellence en
+              Finance-Comptabilité, Marketing et Intelligence Commerciale,
+              Gestion des Ressources Humaines (GRH), Audit et Contrôle de
+              Gestion, ainsi qu'en Entrepreneuriat et Gestion de Projets. Ce
+              pôle inclut également des spécialisations très demandées en
+              Transport et Logistique, en Banque et Institutions Financières,
+              ainsi qu'en Communication d'Entreprise. Le pôle Digital et
+              Technologies s'est fortement développé pour répondre aux besoins
+              de la transformation numérique, avec des cursus en Génie Logiciel,
+              Réseaux et Systèmes Informatiques, Cybersécurité, Data Science
+              (Intelligence Artificielle) et Digital Marketing. Enfin,
+              l'université dispose d'un pôle de Gouvernance proposant des
+              formations en Droit des Affaires, Relations Internationales et
+              Administration Publique, visant à former les futurs cadres et
+              leaders du continent.
+            </p>
+            <br />
+
+            <div
+              style="
+                overflow-x: auto;
+                margin: 20px 0;
+                border-radius: 12px;
+                border: 1px solid #2d3139;
+              "
+            >
+              <table
+                style="
+                  width: 100%;
+                  border-collapse: collapse;
+                  background-color: #1c1f26;
+                  color: #ffffff;
+                  font-family: &quot;Segoe UI&quot;, sans-serif;
+                  font-size: 0.9rem;
+                "
+              >
+                <thead>
+                  <tr
+                    style="
+                      background-color: #007bff;
+                      color: #ffffff;
+                      text-align: left;
+                    "
+                  >
+                    <th style="padding: 12px; border-bottom: 2px solid #2d3139">
+                      Filières
+                    </th>
+                    <th style="padding: 12px; border-bottom: 2px solid #2d3139">
+                      Licence 1
+                    </th>
+                    <th style="padding: 12px; border-bottom: 2px solid #2d3139">
+                      Licence 2
+                    </th>
+                    <th style="padding: 12px; border-bottom: 2px solid #2d3139">
+                      Licence 3
+                    </th>
+                    <th style="padding: 12px; border-bottom: 2px solid #2d3139">
+                      Master 1
+                    </th>
+                    <th style="padding: 12px; border-bottom: 2px solid #2d3139">
+                      Master 2
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td
+                      style="padding: 12px; font-weight: bold; color: #007bff"
+                    >
+                      Sciences de Gestion
+                    </td>
+                    <td style="padding: 12px">550 000</td>
+                    <td style="padding: 12px">550 000</td>
+                    <td style="padding: 12px">600 000</td>
+                    <td style="padding: 12px">850 000</td>
+                    <td style="padding: 12px">950 000</td>
+                  </tr>
+                  <tr
+                    style="
+                      border-bottom: 1px solid #2d3139;
+                      background-color: rgba(255, 255, 255, 0.02);
+                    "
+                  >
+                    <td
+                      style="padding: 12px; font-weight: bold; color: #007bff"
+                    >
+                      Droit / Sciences Po
+                    </td>
+                    <td style="padding: 12px">500 000</td>
+                    <td style="padding: 12px">500 000</td>
+                    <td style="padding: 12px">550 000</td>
+                    <td style="padding: 12px">800 000</td>
+                    <td style="padding: 12px">900 000</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid #2d3139">
+                    <td
+                      style="padding: 12px; font-weight: bold; color: #007bff"
+                    >
+                      Sciences & TIC
+                    </td>
+                    <td style="padding: 12px">650 000</td>
+                    <td style="padding: 12px">650 000</td>
+                    <td style="padding: 12px">750 000</td>
+                    <td style="padding: 12px">1 000 000</td>
+                    <td style="padding: 12px">1 100 000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr style="background-color: rgba(0, 123, 255, 0.1)">
+                    <td
+                      colspan="6"
+                      style="
+                        padding: 10px;
+                        font-size: 0.8rem;
+                        color: #a0a0a0;
+                        text-align: center;
+                      "
+                    >
+                      * Prix en FCFA (Zone UEMOA). Des frais d'inscription de 50
+                      000 FCFA peuvent s'ajouter.
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <h4>Informations de contact</h4>
+            <p class="info">📞 +226 25 30 00 00</p>
+            <p class="info">📧 info@uason.bf</p>
+            <p class="info">🌐 www.uason.bf</p>
+          </div>
+
+          <div class="contact-form">
+            <h4>Contacter l'établissement</h4>
+            <form>
+              <input type="text" placeholder="Nom & Prénom" required />
+              <input type="email" placeholder="Votre Email" required />
+              <input type="tel" placeholder="Téléphone" />
+              <textarea rows="4" placeholder="Votre message..."></textarea>
+              <button
+                type="submit"
+                class="btn-view"
+                style="width: 100%; border: none; cursor: pointer"
+              >
+                Envoyer
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // 1. On sélectionne les éléments HTML par leur ID
+      const slider = document.getElementById("val");
+      const display = document.getElementById("valu");
+
+      // 2. On écoute l'événement 'input' (qui se déclenche à chaque mouvement)
+      slider.addEventListener("input", function () {
+        // 3. On récupère la valeur actuelle du curseur
+        let val = slider.value;
+
+        // 4. On met à jour le texte affiché
+        // On peut ajouter un formatage pour plus de lisibilité
+        display.textContent = Number(val).toLocaleString() + " FCFA";
+      });
+    </script>
+  </body>
 </html>
